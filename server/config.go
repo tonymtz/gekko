@@ -7,19 +7,21 @@ import (
 	"fmt"
 )
 
-type Config struct {
-	AppName  string `yaml:"appname"`
-	Port     int    `yaml:"httpport"`
-	Database string `yaml:"database"`
+type config struct {
+	AppName      string `yaml:"app_name"`
+	Port         int    `yaml:"http_port"`
+	Database     string `yaml:"database"`
+	GoogleId     string `yaml:"google_id"`
+	GoogleSecret string `yaml:"google_secret"`
 }
 
-var Config *Config
+var Config *config
 
 func init() {
 	Config = getConfig()
 }
 
-func getConfig() *Config {
+func getConfig() *config {
 
 	env := os.Getenv("GEKKO_ENV")
 
@@ -42,11 +44,9 @@ func getConfig() *Config {
 
 	Check(err)
 
-	config := &Config{}
+	config := &config{}
 
 	err = yaml.Unmarshal([]byte(dat), config)
-
-	fmt.Println(config)
 
 	Check(err)
 
