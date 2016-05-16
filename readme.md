@@ -7,13 +7,10 @@ Sample project using [Echo](https://github.com/labstack/echo).
 ## Features
 - `fasthttp` enabled by default
 - OAuth2 with Google & Dropbox
+- JWT for user authentication
 
 ## Quick Start
 This lib requires Golang v1.6.
-
-```sh
-$ export GEKKO_ENV=dev && go run main.go
-```
 
 ### Installation
 ```sh
@@ -21,6 +18,14 @@ $ go get
 ```
 
 #### Database
+
+Create database file using sqlite3 (you must have sqlite3 installed)
+```sh
+$ sqlite3 gekko.db
+.databases
+```
+
+and then create the `user` table:
 
 ```sql
 CREATE TABLE "user" (
@@ -31,14 +36,23 @@ CREATE TABLE "user" (
     `profile_picture` TEXT NOT NULL,
     `role` INTEGER NOT NULL DEFAULT 1,
     `token` TEXT,
-    `jwt` TEXT,
-)
+    `jwt` TEXT
+);
 ```
 
 ### Configuration
-(pending...)
+
+Create your config file within `config` directory. Its name must match with the pattern `[env].conf`.
+Recommended envs: `dev`, `test`.
+
+Use `env.conf.sample` as base since it has the expected format. Just replace the values!
 
 ### Test
 ```sh
 $ export GEKKO_ENV=test && go test
+```
+
+### Running
+```sh
+$ export GEKKO_ENV=[env] && go run main.go
 ```
