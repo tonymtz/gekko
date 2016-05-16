@@ -33,7 +33,7 @@ func getConfig() *config {
 	if env == "" {
 		dat, err = ioutil.ReadFile("config/env.conf.sample")
 	} else {
-		filePath := fmt.Sprintf("config/%v.conf", env)
+		filePath := fmt.Sprintf("../config/%v.conf", env)
 
 		if _, err := os.Stat(filePath); os.IsNotExist(err) {
 			dat, err = ioutil.ReadFile("config/env.conf.sample")
