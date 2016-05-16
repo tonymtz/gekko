@@ -10,7 +10,10 @@ Sample project using [Echo](https://github.com/labstack/echo).
 - JWT for user authentication
 
 ## Quick Start
-This lib requires Golang v1.6.
+This lib requires:
+
+- Golang v1.6
+- sqlite3 v3.8.10.2
 
 ### Installation
 ```sh
