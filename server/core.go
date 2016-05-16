@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/gommon/log"
 	"github.com/labstack/echo/engine/fasthttp"
 	"strconv"
+	"github.com/tonymtz/gekko/server/config"
 )
 
 func Start() {
@@ -17,7 +18,7 @@ func Start() {
 
 	router(e)
 
-	port := strconv.Itoa(Config.Port)
+	port := strconv.Itoa(config.Config.Port)
 
 	log.Print("Serving on port " + port)
 	e.Run(fasthttp.New(":" + port))

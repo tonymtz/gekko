@@ -1,18 +1,21 @@
-package server
+package config
 
 import (
 	"io/ioutil"
 	"gopkg.in/yaml.v2"
 	"os"
 	"fmt"
+	"github.com/tonymtz/gekko/server/utils"
 )
 
 type config struct {
-	AppName      string `yaml:"app_name"`
-	Port         int    `yaml:"http_port"`
-	Database     string `yaml:"database"`
-	GoogleId     string `yaml:"google_id"`
-	GoogleSecret string `yaml:"google_secret"`
+	AppName       string `yaml:"app_name"`
+	Port          int    `yaml:"http_port"`
+	Database      string `yaml:"database"`
+	GoogleId      string `yaml:"google_id"`
+	GoogleSecret  string `yaml:"google_secret"`
+	DropboxId     string `yaml:"dropbox_id"`
+	DropboxSecret string `yaml:"dropbox_secret"`
 }
 
 var Config *config
@@ -42,13 +45,13 @@ func getConfig() *config {
 		}
 	}
 
-	Check(err)
+	utils.Check(err)
 
 	config := &config{}
 
 	err = yaml.Unmarshal([]byte(dat), config)
 
-	Check(err)
+	utils.Check(err)
 
 	return config
 }
