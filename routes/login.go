@@ -1,11 +1,16 @@
 package routes
 
 import (
+	"github.com/tonymtz/gekko/models"
+	"github.com/tonymtz/gekko/repos"
+	"github.com/tonymtz/gekko/server/config"
 	"github.com/tonymtz/gekko/server/status"
+	"github.com/tonymtz/gekko/services"
 	"github.com/tonymtz/gekko/services/oauth2"
 	"github.com/tonymtz/gekko/services/oauth2/providers"
 	"github.com/labstack/echo"
-	"github.com/labstack/gommon/log"
+	"fmt"
+	"crypto/rand"
 )
 
 var myProviders map[string]oauth2.IProvider
@@ -19,6 +24,8 @@ var Login LoginRoute
 
 type loginRoute struct {
 	LoginRoute
+	usersRepository repos.UsersRepository
+	googleAPI       services.GoogleAPI
 }
 
 func (this *loginRoute) Get(ctx echo.Context) error {
@@ -35,7 +42,7 @@ func (this *loginRoute) Callback(ctx echo.Context) error {
 	code := ctx.QueryParam("code")
 
 	if code == "" {
-		return ctx.String(status.BAD_REQUEST, "Must provide a code")
+		return echo.NewHTTPError(status.BAD_REQUEST, "Must provide a code")
 	}
 
 	provider := ctx.Param("provider")
@@ -44,44 +51,68 @@ func (this *loginRoute) Callback(ctx echo.Context) error {
 		token, err := p.ExchangeToken(code)
 
 		if err != nil {
-			return ctx.String(status.INTERNAL_SERVER_ERROR, "Exchange token error")
+			return echo.NewHTTPError(status.INTERNAL_SERVER_ERROR, "Exchange token error")
 		}
 
-		log.Print(token.Token) // TODO - remove this
+		profile, err := this.googleAPI.GetProfile(token.Token)
+		user, err := this.usersRepository.FindByProviderId(profile.Id)
+		randomToken := randToken()
 
-		// FACT: token exists
+		// TODO - JWT
 
-		//  gather provider.profile information from provider
-		//  if provider.profile data exists
-		//      user.getByProviderId(provider.profile.provider_id) in our database
-		//      generate custom.token
-		//      if models.user exists
-		//          update models.user with new provider.token & custom.token
-		//      else if models.user doesn't exist
-		//          create new models.user with provider.profile & provider.token & custom.token
-		//      set cookie with custom.token
-		//      redirect to "/app"
-		//  else if provider.profile doesn't exist
-		//      return error! < weird case
+		if err == nil {
+			// update
+			user.Token = token.Token
+			user.JWT = randomToken
+			this.usersRepository.Update(user)
+		} else {
+			// create
+			this.usersRepository.Insert(
+				&models.User{
+					IdProvider: profile.Id,
+					DisplayName: profile.DisplayName,
+					ProfilePicture: profile.Image.Url,
+					Email: profile.Emails[0].Value,
+					Token: token.Token,
+					JWT: randomToken,
+				},
+			)
+		}
+
+		cookie := new(echo.Cookie)
+		cookie.SetName("gekko_jwt")
+		cookie.SetValue(randomToken)
+
+		ctx.SetCookie(cookie)
+		return ctx.Redirect(status.FOUND, "/app")
 	}
 
-	return ctx.String(200, provider + " " + code)
+	return echo.NewHTTPError(status.NOT_FOUND, "Unknown provider")
 }
 
 func init() {
 	myProviders = make(map[string]oauth2.IProvider)
 
 	myProviders["google"] = providers.NewGoogle(
-		"6q4z98mh42d8wqd",
-		"rzktu943cdc777r",
+		config.Config.GoogleId,
+		config.Config.GoogleSecret,
 		"http://localhost:3000/login/google/callback",
 	)
 
 	myProviders["dropbox"] = providers.NewDropbox(
-		"6q4z98mh42d8wqd",
-		"rzktu943cdc777r",
+		config.Config.DropboxId,
+		config.Config.DropboxSecret,
 		"http://localhost:3000/login/dropbox/callback",
 	)
 
-	Login = &loginRoute{}
+	Login = &loginRoute{
+		usersRepository: repos.NewUsersRepository(config.Config.Database), // TODO - fix this path
+		googleAPI: services.NewGoogleAPI(),
+	}
+}
+
+func randToken() string {
+	b := make([]byte, 32)
+	rand.Read(b)
+	return fmt.Sprintf("%x", b)
 }

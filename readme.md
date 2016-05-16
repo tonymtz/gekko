@@ -11,6 +11,10 @@ Sample project using [Echo](https://github.com/labstack/echo).
 ## Quick Start
 This lib requires Golang v1.6.
 
+```sh
+$ export GEKKO_ENV=dev && go run main.go
+```
+
 ### Installation
 ```sh
 $ go get

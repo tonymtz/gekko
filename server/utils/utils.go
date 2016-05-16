@@ -1,4 +1,4 @@
-package server
+package utils
 
 func Check(e error) {
 	if e != nil {

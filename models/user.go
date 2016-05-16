@@ -12,4 +12,5 @@ type User struct {
 	ProfilePicture string  `json:"profile_picture"`
 	Role           int64   `json:"role,omitempty"`
 	Token          string  `json:"token,omitempty"`
+	JWT            string  `json:"jwt,omitempty"`
 }

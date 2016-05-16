@@ -6,7 +6,7 @@ import (
 	"database/sql"
 	"errors"
 	"github.com/tonymtz/gekko/models"
-	"github.com/tonymtz/gekko/server"
+	"github.com/tonymtz/gekko/server/config"
 )
 
 var (
@@ -20,6 +20,7 @@ var (
 		ProfilePicture: "http://image.url/",
 		Role: 1,
 		Token: "t11111",
+		JWT: "xxx",
 	}
 
 	demoUser = &models.User{
@@ -30,6 +31,7 @@ var (
 		ProfilePicture: "http://image.net/",
 		Role: 1,
 		Token: "t22222",
+		JWT: "yyy",
 	}
 )
 
@@ -101,7 +103,7 @@ func TestUserRepository_FindByProviderId(t *testing.T) {
 }
 
 func init() {
-	dbPath = "../" + server.Config.Database
+	dbPath = "../" + config.Config.Database
 }
 
 func getUser(id int64, user *models.User) error {
@@ -112,7 +114,7 @@ func getUser(id int64, user *models.User) error {
 	}
 
 	err = database.QueryRow(
-		"SELECT id, id_provider, display_name, email, profile_picture, role, token FROM user WHERE id=?",
+		"SELECT id, id_provider, display_name, email, profile_picture, role, token, jwt FROM user WHERE id=?",
 		id,
 	).Scan(
 		&user.Id,
@@ -122,6 +124,7 @@ func getUser(id int64, user *models.User) error {
 		&user.ProfilePicture,
 		&user.Role,
 		&user.Token,
+		&user.JWT,
 	)
 
 	if err == sql.ErrNoRows {
@@ -143,7 +146,7 @@ func insertUser(user *models.User) error {
 	}
 
 	_, err = database.Exec(
-		"INSERT INTO user (id, id_provider, display_name, email, profile_picture, role, token) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		"INSERT INTO user (id, id_provider, display_name, email, profile_picture, role, token, jwt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
 		user.Id,
 		user.IdProvider,
 		user.DisplayName,
@@ -151,6 +154,7 @@ func insertUser(user *models.User) error {
 		user.ProfilePicture,
 		user.Role,
 		user.Token,
+		user.JWT,
 	)
 
 	if err != nil {

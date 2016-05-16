@@ -15,7 +15,7 @@ type UsersRepository interface {
 	FindByProviderId(string) (*models.User, error)
 	Insert(*models.User) (int64, error)
 	Remove()
-	Update()
+	Update(*models.User)
 }
 
 func NewUsersRepository(dbPath string) UsersRepository {
@@ -38,7 +38,7 @@ func (this *userRepository) FindById(id int64) (*models.User, error) {
 	foundUser := &models.User{}
 
 	err = database.QueryRow(
-		"SELECT id, id_provider, display_name, email, profile_picture, role, token FROM user WHERE id=?",
+		"SELECT id, id_provider, display_name, email, profile_picture, role, token, jwt FROM user WHERE id=?",
 		id,
 	).Scan(
 		&foundUser.Id,
@@ -48,6 +48,7 @@ func (this *userRepository) FindById(id int64) (*models.User, error) {
 		&foundUser.ProfilePicture,
 		&foundUser.Role,
 		&foundUser.Token,
+		&foundUser.JWT,
 	)
 
 	if err == sql.ErrNoRows {
@@ -71,7 +72,7 @@ func (this *userRepository) FindByProviderId(providerId string) (*models.User, e
 	foundUser := &models.User{}
 
 	err = database.QueryRow(
-		"SELECT id, id_provider, display_name, email, profile_picture, role, token FROM user WHERE id_provider=?",
+		"SELECT id, id_provider, display_name, email, profile_picture, role, token, jwt FROM user WHERE id_provider=?",
 		providerId,
 	).Scan(
 		&foundUser.Id,
@@ -81,6 +82,7 @@ func (this *userRepository) FindByProviderId(providerId string) (*models.User, e
 		&foundUser.ProfilePicture,
 		&foundUser.Role,
 		&foundUser.Token,
+		&foundUser.JWT,
 	)
 
 	if err == sql.ErrNoRows {
@@ -102,7 +104,7 @@ func (this *userRepository) Insert(newUser *models.User) (int64, error) {
 	}
 
 	result, err := database.Exec(
-		"INSERT INTO user (id, id_provider, display_name, email, profile_picture, role, token) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		"INSERT INTO user (id, id_provider, display_name, email, profile_picture, role, token, jwt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
 		newUser.Id,
 		newUser.IdProvider,
 		newUser.DisplayName,
@@ -110,6 +112,7 @@ func (this *userRepository) Insert(newUser *models.User) (int64, error) {
 		newUser.ProfilePicture,
 		newUser.Role,
 		newUser.Token,
+		newUser.JWT,
 	)
 
 	if err != nil {
@@ -123,7 +126,7 @@ func (this *userRepository) Insert(newUser *models.User) (int64, error) {
 
 func (this *userRepository) Remove() {}
 
-func (this *userRepository) Update() {}
+func (this *userRepository) Update(*models.User) {}
 
 func openDB(dbPath string) (*sql.DB, *sql.Tx, error) {
 	database, err := sql.Open(DB_DRIVER, dbPath)
