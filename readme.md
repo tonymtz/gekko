@@ -30,7 +30,8 @@ CREATE TABLE "user" (
     `email` TEXT NOT NULL,
     `profile_picture` TEXT NOT NULL,
     `role` INTEGER NOT NULL DEFAULT 1,
-    `token` TEXT
+    `token` TEXT,
+    `jwt` TEXT,
 )
 ```
 
