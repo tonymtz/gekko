@@ -1,4 +1,4 @@
-package provider
+package providers
 
 import "github.com/tonymtz/gekko/services/oauth2"
 
@@ -7,18 +7,12 @@ const (
 	GOOGLE_TOKEN_EXCHANGE_URL = "https://www.googleapis.com/oauth2/v4/token"
 )
 
-type Google struct {
-	oauth2.Provider
-}
-
-func NewGoogle(key, secret, redirectUrl string) *Dropbox {
-	return &Dropbox{
-		oauth2.NewProvider(
-			key,
-			secret,
-			redirectUrl,
-			GOOGLE_AUTHORIZATION_URL,
-			GOOGLE_TOKEN_EXCHANGE_URL,
-		),
-	}
+func NewGoogle(key, secret, redirectUrl string) oauth2.IProvider {
+	return oauth2.NewProvider(
+		key,
+		secret,
+		redirectUrl,
+		GOOGLE_AUTHORIZATION_URL,
+		GOOGLE_TOKEN_EXCHANGE_URL,
+	)
 }

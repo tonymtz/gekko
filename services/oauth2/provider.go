@@ -18,8 +18,8 @@ type IProvider interface {
 	ExchangeToken(string) (*Token, error)
 }
 
-func NewProvider(key, secret, redirectUrl, authURL, exchangeURL string) Provider {
-	return Provider{
+func NewProvider(key, secret, redirectUrl, authURL, exchangeURL string) IProvider {
+	return &provider{
 		Key: key,
 		Secret: secret,
 		RedirectURL: redirectUrl,
@@ -28,7 +28,7 @@ func NewProvider(key, secret, redirectUrl, authURL, exchangeURL string) Provider
 	}
 }
 
-type Provider struct {
+type provider struct {
 	IProvider,
 	Key         string
 	Secret      string
@@ -37,11 +37,11 @@ type Provider struct {
 	authURL     string
 }
 
-func (this *Provider) RedirectUrl() string {
+func (this *provider) RedirectUrl() string {
 	return fmt.Sprintf(this.authURL, this.Key, this.RedirectURL)
 }
 
-func (this *Provider) ExchangeToken(code string) (*Token, error) {
+func (this *provider) ExchangeToken(code string) (*Token, error) {
 	data := url.Values{}
 
 	data.Add("code", code)
