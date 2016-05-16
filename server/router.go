@@ -7,13 +7,13 @@ import (
 
 func router(e *echo.Echo) {
 	/*
-	 * Home
-	 */
-	e.Static("/", "static")
-
-	/*
 	 * Login
 	 */
 	e.GET("/login/:provider", routes.Login.Get)
 	e.GET("/login/:provider/callback", routes.Login.Callback)
+
+	/*
+	 * Home
+	 */
+	e.Static("/", "static")
 }
