@@ -9,13 +9,15 @@ import (
 )
 
 type config struct {
-	AppName       string `yaml:"app_name"`
-	Port          int    `yaml:"http_port"`
-	Database      string `yaml:"database"`
-	GoogleId      string `yaml:"google_id"`
-	GoogleSecret  string `yaml:"google_secret"`
-	DropboxId     string `yaml:"dropbox_id"`
-	DropboxSecret string `yaml:"dropbox_secret"`
+	AppName          string `yaml:"app_name"`
+	Port             int    `yaml:"http_port"`
+	Database         string `yaml:"database"`
+	GoogleId         string `yaml:"google_id"`
+	GoogleSecret     string `yaml:"google_secret"`
+	GoogleCallback   string `yaml:"google_callback"`
+	DropboxId        string `yaml:"dropbox_id"`
+	DropboxSecret    string `yaml:"dropbox_secret"`
+	DropboxCallback  string `yaml:"dropbox_callback"`
 }
 
 var Config *config
