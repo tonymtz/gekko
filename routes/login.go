@@ -96,13 +96,13 @@ func init() {
 	myProviders["google"] = providers.NewGoogle(
 		config.Config.GoogleId,
 		config.Config.GoogleSecret,
-		"http://localhost:3000/login/google/callback",
+		config.Config.GoogleCallback,
 	)
 
 	myProviders["dropbox"] = providers.NewDropbox(
 		config.Config.DropboxId,
 		config.Config.DropboxSecret,
-		"http://localhost:3000/login/dropbox/callback",
+		config.Config.DropboxCallback,
 	)
 
 	Login = &loginRoute{
