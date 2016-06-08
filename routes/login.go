@@ -9,8 +9,6 @@ import (
 	"github.com/tonymtz/gekko/services/oauth2"
 	"github.com/tonymtz/gekko/services/oauth2/providers"
 	"github.com/labstack/echo"
-	"fmt"
-	"crypto/rand"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -38,10 +36,14 @@ func (this *loginRoute) Get(ctx echo.Context) error {
 
 	return echo.NewHTTPError(status.NOT_FOUND, "Unknown provider")
 }
+
 func (this *loginRoute) Callback(ctx echo.Context) error {
 	provider := ctx.Param("provider")
+
 	var myProvider = myProviders[provider];
+
 	code := ctx.QueryParam("code")
+
 	if code == "" {
 		return echo.NewHTTPError(status.BAD_REQUEST, "Must provide a code")
 	}
@@ -100,8 +102,6 @@ func (this *loginRoute) createJWTFromProfile(profile *SessionProfile) string {
 	return t
 }
 
-
-
 func init() {
 	myProviders = make(map[string]oauth2.IProvider)
 
@@ -118,21 +118,16 @@ func init() {
 	)
 
 	Login = &loginRoute{
-		usersRepository: repos.NewUsersRepository(config.Config.Database), // TODO - fix this path
+		usersRepository: repos.NewUsersRepository(config.Config.Database),
 		googleAPI: services.NewGoogleAPI(),
 	}
-}
-
-func randToken() string {
-	b := make([]byte, 32)
-	rand.Read(b)
-	return fmt.Sprintf("%x", b)
 }
 
 type SessionProfile struct {
 	Email string
 	Token string
 }
+
 type CallbackResponse struct {
 	Token string `json:"token"`
 }
