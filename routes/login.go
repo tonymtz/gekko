@@ -11,6 +11,7 @@ import (
 	"github.com/labstack/echo"
 	"fmt"
 	"crypto/rand"
+	"github.com/dgrijalva/jwt-go"
 )
 
 var myProviders map[string]oauth2.IProvider
@@ -37,58 +38,69 @@ func (this *loginRoute) Get(ctx echo.Context) error {
 
 	return echo.NewHTTPError(status.NOT_FOUND, "Unknown provider")
 }
-
 func (this *loginRoute) Callback(ctx echo.Context) error {
+	provider := ctx.Param("provider")
+	var myProvider = myProviders[provider];
 	code := ctx.QueryParam("code")
-
 	if code == "" {
 		return echo.NewHTTPError(status.BAD_REQUEST, "Must provide a code")
 	}
 
-	provider := ctx.Param("provider")
+	tokenFromProvider, err := myProvider.ExchangeToken(code)
 
-	if p, ok := myProviders[provider]; ok {
-		token, err := p.ExchangeToken(code)
-
-		if err != nil {
-			return echo.NewHTTPError(status.INTERNAL_SERVER_ERROR, "Exchange token error")
-		}
-
-		profile, err := this.googleAPI.GetProfile(token.Token)
-		user, err := this.usersRepository.FindByProviderId(profile.Id)
-		randomToken := randToken()
-
-		// TODO - JWT
-
-		if err == nil {
-			// update
-			user.Token = token.Token
-			user.JWT = randomToken
-			this.usersRepository.Update(user)
-		} else {
-			// create
-			this.usersRepository.Insert(
-				&models.User{
-					IdProvider: profile.Id,
-					DisplayName: profile.DisplayName,
-					ProfilePicture: profile.Image.Url,
-					Email: profile.Emails[0].Value,
-					Token: token.Token,
-					JWT: randomToken,
-				},
-			)
-		}
-
-		cookie := new(echo.Cookie)
-		cookie.SetName("gekko_jwt")
-		cookie.SetValue(randomToken)
-
-		ctx.SetCookie(cookie)
-		return ctx.Redirect(status.FOUND, "/app")
+	if err != nil {
+		return echo.NewHTTPError(status.INTERNAL_SERVER_ERROR, "Exchange token error")
 	}
 
-	return echo.NewHTTPError(status.NOT_FOUND, "Unknown provider")
+	myGoogleProfile := this.retrieveProfileFromTokenAndUpdateUser(tokenFromProvider.Token)
+
+	mySessionProfile := &SessionProfile{
+		Email: myGoogleProfile.Emails[0].Value,
+		Token: tokenFromProvider.Token,
+	}
+
+	myJWT := this.createJWTFromProfile(mySessionProfile)
+
+	return ctx.JSON(status.OK, &CallbackResponse{
+		Token: myJWT,
+	})
 }
+
+func (this *loginRoute) retrieveProfileFromTokenAndUpdateUser(token string) *services.GoogleProfile {
+	profile, _ := this.googleAPI.GetProfile(token)
+	user, err := this.usersRepository.FindByProviderId(profile.Id)
+
+	if err == nil {
+		// update
+		user.Token = token
+		this.usersRepository.Update(user)
+	} else {
+		// create
+		this.usersRepository.Insert(
+			&models.User{
+				IdProvider: profile.Id,
+				Email: profile.Emails[0].Value,
+				DisplayName: profile.DisplayName,
+				Token: token,
+			},
+		)
+	}
+
+	return profile
+}
+
+func (this *loginRoute) createJWTFromProfile(profile *SessionProfile) string {
+	jwtoken := jwt.New(jwt.SigningMethodHS256)
+
+	jwtoken.Claims["email"] = profile.Email
+	jwtoken.Claims["token"] = profile.Token
+
+	t, _ := jwtoken.SignedString([]byte("secret"))
+
+	return t
+}
+
+
 
 func init() {
 	myProviders = make(map[string]oauth2.IProvider)
@@ -115,4 +127,12 @@ func randToken() string {
 	b := make([]byte, 32)
 	rand.Read(b)
 	return fmt.Sprintf("%x", b)
+}
+
+type SessionProfile struct {
+	Email string
+	Token string
+}
+type CallbackResponse struct {
+	Token string `json:"token"`
 }
