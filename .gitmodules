@@ -1,0 +1,12 @@
+[submodule "puppet/modules/golang"]
+	path = puppet/modules/golang
+	url = https://github.com/dcoxall/dcoxall-golang
+[submodule "puppet/modules/git"]
+	path = puppet/modules/git
+	url = https://github.com/puppetlabs/puppetlabs-git
+[submodule "puppet/modules/ohmyzsh"]
+	path = puppet/modules/ohmyzsh
+	url = https://github.com/acme/puppet-acme-oh-my-zsh/
+[submodule "puppet/modules/stdlib"]
+	path = puppet/modules/stdlib
+	url = https://github.com/puppetlabs/puppetlabs-stdlib
