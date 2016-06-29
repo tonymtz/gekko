@@ -94,8 +94,10 @@ func (this *loginRoute) retrieveProfileFromTokenAndUpdateUser(token string) *ser
 func (this *loginRoute) createJWTFromProfile(profile *SessionProfile) string {
 	jwtoken := jwt.New(jwt.SigningMethodHS256)
 
-	jwtoken.Claims["email"] = profile.Email
-	jwtoken.Claims["token"] = profile.Token
+	claims := jwtoken.Claims.(jwt.MapClaims)
+
+	claims["email"] = profile.Email
+	claims["token"] = profile.Token
 
 	t, _ := jwtoken.SignedString([]byte("secret"))
 
