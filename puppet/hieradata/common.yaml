@@ -2,11 +2,4 @@
 
 user: "vagrant"
 
-source_folder: "source"
-
-golang_version: "1.6"
-
-npm_packages:
-    - node-gyp
-    - bower
-    - nodemon
+psql_password: "welcome1"

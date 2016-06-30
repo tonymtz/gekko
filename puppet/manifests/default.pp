@@ -1,15 +1,14 @@
-$user = hiera("user")
-$source_folder = hiera("source_folder")
-$golang_version = hiera("golang_version")
-$npm_packages = hiera_array("npm_packages")
+$user = hiera('user')
+$psql_password = hiera('psql_password')
 
-file { "/etc/motd":
+file { '/etc/motd':
   content => "
 *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
 =*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=
-     Node/MongoDB Dev Server
+     ~~~ RELEASE THE GEKKO ~~~
+    Golang/Postgresql Dev Server
+- Name:    gekko.dev
 - OS:      Ubuntu 14.04 (trusty 64)
-- Node:    ${golang_version}
 - IP:      10.0.0.10
 *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
 =*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=
@@ -17,5 +16,6 @@ file { "/etc/motd":
 }
 
 class { "setup":
-  user            => $user
+  user => $user,
+  psql_password => $psql_password
 }
