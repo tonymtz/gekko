@@ -17,8 +17,5 @@ file { "/etc/motd":
 }
 
 class { "setup":
-  user            => $user,
-  source_folder   => $source_folder,
-  golang_version  => $golang_version,
-  npm_packages    => $npm_packages
+  user            => $user
 }

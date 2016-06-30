@@ -1,4 +1,4 @@
-class setup($user, $source_folder, $golang_version, $npm_packages)
+class setup($user)
 {
   include git
 
@@ -10,16 +10,15 @@ class setup($user, $source_folder, $golang_version, $npm_packages)
       "/usr/bin/",
       "/usr/sbin",
       "/bin",
-      "/sbin",
-      "/usr/local/node/node-default/bin"
+      "/sbin"
     ]
   }
 
 # Make sure our code directory has proper permissions
-  file { "/vagrant/${source_folder}":
-    ensure => "directory",
-    mode   => 755
-  }
+  # file { "/vagrant":
+  #   ensure => "directory",
+  #   mode   => 755
+  # }
 
 # oh my zsh
   class { "ohmyzsh": }
@@ -28,8 +27,26 @@ class setup($user, $source_folder, $golang_version, $npm_packages)
   ohmyzsh::plugins { "root": plugins => "git" }
 
   class { 'golang':
-    version   => $golang_version,
+    version   => '1.6',
     workspace => '/usr/local/src/go',
+  }
+
+  # file { "/etc/environment":
+  #   content => inline_template("GOPATH=/vagrant/")
+  # }
+
+  # file { "/etc/environment":
+  #   content => inline_template("export PATH=$PATH:$GOPATH/bin:/usr/local/go/bin")
+  # }
+
+  file_line { 'adding_gopath':
+    path => '/home/vagrant/.bashrc',
+    line => 'GOPATH=/vagrant/'
+  }
+
+  file_line { 'adding_path':
+    path => '/home/vagrant/.bashrc',
+    line => 'PATH=$PATH:$GOPATH/bin:/usr/local/go/bin'
   }
 
 # cachefilesd
