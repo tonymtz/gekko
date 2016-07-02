@@ -45,7 +45,8 @@ class setup($user, $psql_password)
 
   file_line { 'adding_path':
     path => '/home/vagrant/.bashrc',
-    line => 'PATH=$PATH:$GOPATH/bin:/usr/local/go/bin'
+    line => 'PATH=$PATH:$GOPATH/bin:/usr/local/go/bin',
+    require => File_line['adding_gopath']
   }
 
   ####################
