@@ -29,8 +29,6 @@ func NewGoogleAPI() GoogleAPI {
 func (this *googleAPI) GetProfile(token string) (*GoogleProfile, error) {
 	getUrl := fmt.Sprintf(this.getDataURL, "me", token)
 
-	fmt.Println(token)
-
 	resp, err := http.Get(getUrl)
 
 	if err != nil {

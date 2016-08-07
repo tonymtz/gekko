@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/tonymtz/gekko/models"
-	"github.com/tonymtz/gekko/repos"
+	"github.com/tonymtz/gekko/repositories"
 	"github.com/tonymtz/gekko/server/config"
 	"github.com/tonymtz/gekko/server/status"
 	"github.com/tonymtz/gekko/services"
@@ -10,6 +10,9 @@ import (
 	"github.com/tonymtz/gekko/services/oauth2/providers"
 	"github.com/labstack/echo"
 	"github.com/dgrijalva/jwt-go"
+	"database/sql"
+	_ "github.com/lib/pq"
+	"log"
 )
 
 var myProviders map[string]oauth2.IProvider
@@ -23,7 +26,7 @@ var Login LoginRoute
 
 type loginRoute struct {
 	LoginRoute
-	usersRepository repos.UsersRepository
+	usersRepository repositories.UsersRepository
 	googleAPI       services.GoogleAPI
 }
 
@@ -119,8 +122,15 @@ func init() {
 		config.Config.DropboxCallback,
 	)
 
+	//db, err := sql.Open("postgres", "user=postgres password=welcome1 database=gekko_db sslmode=disable")
+	db, err := sql.Open("postgres", "user=postgres database=0_gekko_dev sslmode=disable")
+
+	if err != nil {
+		panic(err)
+	}
+
 	Login = &loginRoute{
-		usersRepository: repos.NewUsersRepository(config.Config.Database),
+		usersRepository: repositories.NewUsersRepository(db),
 		googleAPI: services.NewGoogleAPI(),
 	}
 }

@@ -1,11 +1,13 @@
 package server
 
 import (
+	"strconv"
+
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/labstack/gommon/log"
 	"github.com/labstack/echo/engine/fasthttp"
-	"strconv"
+
 	"github.com/tonymtz/gekko/server/config"
 )
 

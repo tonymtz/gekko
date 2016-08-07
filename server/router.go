@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/labstack/echo"
+
 	"github.com/tonymtz/gekko/routes"
 )
 
