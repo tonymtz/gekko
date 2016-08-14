@@ -1,0 +1,24 @@
+Release Plan
+
+  v2.0.0:
+    ✔ file scaffolding @done(2016-08-14 14:42)
+    ✔ echo object is returned when creating a new server @done(2016-08-14 14:42)
+    ✔ read from config file @done(2016-08-14 14:43)
+    ☐ receive custom config object
+    ☐ database preparation with goose & posgres
+    ☐ users crud
+    ☐ google connector to get user data
+    ☐ google oauth2
+    ☐ JWT (claims, middleware)
+    ☐ update README
+    ☐ enable fasthttp
+    ☐ release:
+      ☐ git tag
+      ☐ clone to gorepos team
+
+  v2.1.0:
+    ☐ dropbox connector to get user data
+    ☐ dropbox oauth2
+    ☐ release:
+      ☐ git tag
+      ☐ clone to gorepos team
