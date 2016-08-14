@@ -84,3 +84,6 @@ src
 pkg
 source
 bin
+
+vendor/*
+!vendor/vendor.json
