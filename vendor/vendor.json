@@ -1,0 +1,13 @@
+{
+	"comment": "gekko's third party dependencies",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "ve8WcNuwv+xgIeX8xfUYxg7GyQs=",
+			"path": "github.com/labstack/echo",
+			"revision": "e918eacd9d5326f2ec6d5e9077a1f9543c4af486",
+			"revisionTime": "2016-08-11T23:25:03Z"
+		}
+	],
+	"rootPath": "github.com/tonymtz/gekko"
+}

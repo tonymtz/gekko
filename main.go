@@ -1,7 +1,7 @@
 package main
 
-import "github.com/tonymtz/gekko/server"
+import "github.com/tonymtz/gekko/core"
 
 func main() {
-	server.Start()
+	core.New("3000")
 }
