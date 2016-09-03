@@ -1,40 +1,45 @@
-![gekko](https://github.com/tonymtz/gekko/blob/master/static/gekko.png)
-
 # Gekko :dragon:
 
 Sample project using [Echo](https://github.com/labstack/echo).
 
 ## Features
-- :rocket: `fasthttp` enabled
-- :floppy_disk: ready to work with postgresql
-- :cop: OAuth2 with Google & Dropbox
-- :godmode: JWT for user authentication
+- `fasthttp` enabled :rocket:
+- ready to work with postgresql :floppy_disk:
+- OAuth2 with Google & Dropbox :cop:
+- JWT for user authentication :godmode:
 
 ## Installation
 
 The overall installation will take around 5 minutes downloading dependencies, depending of you internet bandwidth.
 
-:octocat: Clone repo:
+Clone repo :octocat::
 ```sh
 $ git clone git@github.com:tonymtz/gekko.git --recursive
 ```
 
-:milky_way: Start vagrant machine and log in (you might need enter your administrator password):
+Start vagrant machine and log in (you might need enter your administrator password) :milky_way::
 ```sh
 $ vagrant up
 $ vagrant ssh
 ```
 
-:minidisc: Install golang dependencies:
+Install golang dependencies :minidisc::
 ```sh
 $ cd src/github.com/tonymtz/gekko
+$ go get bitbucket.org/liamstask/goose/cmd/goose
 $ go get -u github.com/kardianos/govendor
 $ govendor sync
 ```
 
-### Running :red_car:
+## Running :red_car:
 ```sh
 $ go run main.go
 ```
 
 :bell: By default, your server will be available through this url: [http://10.0.0.10:3000](http://10.0.0.10:3000)
+
+## Working from your vagrant machine
+
+- [Install atom](https://codeforgeek.com/2014/09/install-atom-editor-ubuntu-14-04/)
+- [Install goodies to atom](http://marcio.io/2015/07/supercharging-atom-editor-for-go-development/)
+- [Speed up x11 forwarding](http://xmodulo.com/how-to-speed-up-x11-forwarding-in-ssh.html)

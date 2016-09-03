@@ -1,7 +1,12 @@
 package main
 
-import "github.com/tonymtz/gekko/core"
+import (
+	"fmt"
+
+	"github.com/tonymtz/gekko/core"
+)
 
 func main() {
+	fmt.Println("Running from :3000")
 	core.New("3000")
 }
