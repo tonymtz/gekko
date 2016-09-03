@@ -1,61 +1,40 @@
 ![gekko](https://github.com/tonymtz/gekko/blob/master/static/gekko.png)
 
-# Gekko
+# Gekko :dragon:
 
 Sample project using [Echo](https://github.com/labstack/echo).
 
 ## Features
-- `fasthttp` enabled by default
-- OAuth2 with Google & Dropbox
-- JWT for user authentication
+- :rocket: `fasthttp` enabled
+- :floppy_disk: ready to work with postgresql
+- :cop: OAuth2 with Google & Dropbox
+- :godmode: JWT for user authentication
 
-## Quick Start
-This lib requires:
+## Installation
 
-- Golang v1.6
-- sqlite3 v3.8.10.2
+The overall installation will take around 5 minutes downloading dependencies, depending of you internet bandwidth.
 
-### Installation
+:octocat: Clone repo:
 ```sh
-$ go get
+$ git clone git@github.com:tonymtz/gekko.git --recursive
 ```
 
-#### Database
-
-Create database file using sqlite3 (you must have sqlite3 installed)
+:milky_way: Start vagrant machine and log in (you might need enter your administrator password):
 ```sh
-$ sqlite3 gekko.db
-.databases
+$ vagrant up
+$ vagrant ssh
 ```
 
-and then create the `user` table:
-
-```sql
-CREATE TABLE "user" (
-    `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    `id_provider` TEXT NOT NULL,
-    `display_name` TEXT NOT NULL,
-    `email` TEXT NOT NULL,
-    `profile_picture` TEXT NOT NULL,
-    `role` INTEGER NOT NULL DEFAULT 1,
-    `token` TEXT,
-    `jwt` TEXT
-);
-```
-
-### Configuration
-
-Create your config file within `config` directory. Its name must match with the pattern `[env].conf`.
-Recommended envs: `dev`, `test`.
-
-Use `env.conf.sample` as base since it has the expected format. Just replace the values!
-
-### Test
+:minidisc: Install golang dependencies:
 ```sh
-$ export GEKKO_ENV=test && go test
+$ cd src/github.com/tonymtz/gekko
+$ go get -u github.com/kardianos/govendor
+$ govendor sync
 ```
 
-### Running
+### Running :red_car:
 ```sh
-$ export GEKKO_ENV=[env] && go run main.go
+$ go run main.go
 ```
+
+:bell: By default, your server will be available through this url: [http://10.0.0.10:3000](http://10.0.0.10:3000)

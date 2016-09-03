@@ -7,6 +7,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.network "private_network", ip: "10.0.0.10"
   config.ssh.forward_agent = true
+  config.ssh.forward_x11 = true
 
   config.vm.synced_folder ".", "/vagrant", nfs: true, mount_options: ['rw', 'vers=3', 'tcp', 'fsc']
 

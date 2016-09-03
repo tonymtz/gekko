@@ -38,15 +38,33 @@ class setup($user, $psql_password)
     workspace => '/usr/local/src/go',
   }
 
+  $golang_dirs = [
+    '/home/vagrant/src',
+    '/home/vagrant/src/github.com',
+    '/home/vagrant/src/github.com/tonymtz',
+  ]
+
+  file { $golang_dirs:
+    ensure => 'directory',
+    owner  => 'vagrant',
+    mode   => '0750',
+  }
+
+  file { '/home/vagrant/src/github.com/tonymtz/gekko':
+    ensure => 'link',
+    target => '/vagrant/',
+    require => File[$golang_dirs],
+  }
+
   file_line { 'adding_gopath':
     path => '/home/vagrant/.bashrc',
-    line => 'GOPATH=/vagrant/'
+    line => 'GOPATH=/home/vagrant/',
   }
 
   file_line { 'adding_path':
     path => '/home/vagrant/.bashrc',
     line => 'PATH=$PATH:$GOPATH/bin:/usr/local/go/bin',
-    require => File_line['adding_gopath']
+    require => File_line['adding_gopath'],
   }
 
   ####################
