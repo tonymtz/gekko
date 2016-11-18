@@ -1,5 +1,4 @@
 Release Plan
-
   v2.0.0:
     ✔ file scaffolding @done(2016-08-14 14:42)
     ✔ echo object is returned when creating a new server @done(2016-08-14 14:42)
